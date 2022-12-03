@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "react_native_app",
-    "slug": "react_native_app",
+    "name": "react-native-app",
+    "slug": "react-native-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.cmelgarmorales.react_native_app"
+      "package": "com.cmelgarmorales.react-native-app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
