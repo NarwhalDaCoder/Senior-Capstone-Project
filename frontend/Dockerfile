@@ -21,11 +21,13 @@ RUN npm i --unsafe-perm --allow-root -g npm@latest expo-cli@latest
 RUN mkdir /opt/react-native-app
 WORKDIR /opt/react-native-app
 ENV PATH /opt/react-native-app/.bin:$PATH
+RUN mkdir -p /opt/react-native-app/node_modules
 COPY ./react-native-app/package.json ./react-native-app/package-lock.json ./
-RUN npm install
+RUN npm install --prefix /opt/react-native-app/
+
 
 # copy in our source code last, as it changes the most
-WORKDIR /opt/react-native-app/app
+WORKDIR /opt/react-native-app/
 # for development, we bind mount volumes; comment out for production
 COPY ./react-native-app .
 
