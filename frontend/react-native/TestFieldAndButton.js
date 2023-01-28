@@ -43,7 +43,7 @@ const TestFieldAndButton = () => {
     <Button
     title="Press me"
     //onPress={() => console.log(ip+" "+ port + " " + mix +" " + channel)}
-    onPress={() => TestGetTCP(ip,port,mix,channel)}
+    onPress={() => TestGetTCP(ip,port,mix,channel,1111)}
     />
     </View>
   );
