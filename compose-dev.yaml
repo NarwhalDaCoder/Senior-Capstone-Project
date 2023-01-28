@@ -15,10 +15,18 @@ services:
         - '19002:19002'
       healthcheck:
         disable: true
+      volumes:
+      - type: bind
+        source: ./frontend/react-native/
+        target: /opt/react-native-app/
   backend:
       build:
         context: ./backend
       ports:
        - '5000:5000'
+      volumes:
+      - type: bind
+        source: ./backend/flask-python
+        target: /opt/flask-python
 volumes:
-  notused:
+  myapp:
