@@ -1,6 +1,7 @@
-from flask import Flask,request
-from flask_cors import CORS
+from flask import Flask,request,jsonify
+from flask_cors import CORS , cross_origin
 import socket
+import json
 app = Flask(__name__)
 CORS(app)
 
@@ -9,18 +10,21 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 @app.route('/getstatus',methods = ['POST'])
+@cross_origin(support_credentials=True)
 def login():
         #testing edits on container based on local files
         #server only uses new app.py
         #when flask app is rerun when container restarts
-        raise "hell"
-        HOST = '127.0.0.1'
-        PORT = 1111
+        HOST = 'host.docker.internal'
+        PORT = 5002
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((HOST, PORT))
             s.sendall(b'Hello World')
             data = s.recv(1024)
-        print(f"Received {data!r}")
+        f = open('data.json')
+        data = json.load(f)
+        json_str = json.dumps(data)
+        return json_str, 200
 '''try:
    if request.method == 'POST':
         try:
