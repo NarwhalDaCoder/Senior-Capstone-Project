@@ -3,6 +3,7 @@
 import socket
 import json
 import os
+import time
 
 #Define limits
 CHANNELS = 72
@@ -68,12 +69,12 @@ def echoServer():
                     print(command)
                     if command == []:
                         break
-
                     response  = 'OK ' + data + ' ' + getData(CL5,command)
                 except Exception as e:
                     print(e)
                     response = "FAILED TO PROCESS"
                 finally:
+                    time.sleep(.1)
                     conn.sendall(response.encode())
 
 
