@@ -1,7 +1,10 @@
 from flask import Flask,request,jsonify
 from flask_cors import CORS , cross_origin
+from testserver import emulated
 import socket
 import json
+import time
+from threading import Thread
 app = Flask(__name__)
 CORS(app)
 
@@ -24,6 +27,63 @@ def login():
         f = open('data.json')
         data = json.load(f)
         json_str = json.dumps(data)
+        return json_str, 200
+@app.route('/getDummyProfile',methods = ['POST'])
+@cross_origin(support_credentials=True)
+def dummy():
+        #testing edits on container based on local files
+        #server only uses new app.py
+        #when flask app is rerun when container restarts
+        content = request.json
+        channel = int(content['channel'])
+        mix = int(content['mix'])
+        print(channel)
+        print(mix)
+        validPrefix = ['get']
+        validInfix = ['MIXER:Current/InCh/Label/Name',
+                  'MIXER:Current/InCh/ToMix/Level',
+                  'MIXER:Current/InCh/ToMix/Pan',
+                  'MIXER:Current/InCh/ToMix/On']
+        lables =  ['Name','Level','Pan','On']
+        types = ['str','int','int','bool']
+        jsonFormat  = {
+    "filename": "CL5.json",
+    "version": "0.1",
+    "user": "",
+    "mixes": []}
+        config = ['0.0.0.0',5001,mix,channel]
+        HOST = '127.0.0.1'
+        PORT = 5001
+        thread = Thread(target=emulated.echoServer, args=([config]))
+        thread.start()
+        time.sleep(1)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            mixChannelDictionary =[]
+            for i in range(1,mix+1):
+                channelValueList = []
+                for j in range(1,channel+1):
+                    entryList = []
+                    for k in range(4):
+
+                        command = validPrefix[0] + ' ' + validInfix[k] + ' ' + str(j) + ' ' + str(i)
+                        s.sendall(command.encode())
+                        
+                        response = s.recv(1024).decode()[-1]
+                    
+                        strErr = "Sorry, no numbers" + command + config[0]+str(config[1])+str(config[2])+str(config[3])+response
+                        print(strErr)
+                        if types[k] == 'str':
+                            entryList.append(str(response))
+                        elif types[k] == 'int':
+                            entryList.append(int(response))
+                        elif types[k] == 'bool':
+                            entryList.append(bool(response))
+                    channelValueList.append({lables[x]: entryList[x] for x in range(len(lables))})   
+                mixChannelDictionary.append({str(x):channelValueList[x] for x in range(len(channelValueList))})
+            
+            jsonFormat['mixes'].append(mixChannelDictionary)
+        json_str = json.dumps(jsonFormat)
         return json_str, 200
 '''try:
    if request.method == 'POST':
