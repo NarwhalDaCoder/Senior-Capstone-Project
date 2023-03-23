@@ -390,9 +390,9 @@
           "On": false
         },
         "65": {
-          "Name": "Bass",
-          "Level": -4,
-          "Pan": 35,
+          "Name": "Teriyaki",
+          "Level": -1,
+          "Pan": 2,
           "On": false
         },
         "66": {
@@ -432,10 +432,10 @@
           "On": false
         },
         "72": {
-          "Name": "Bass",
-          "Level": -4,
-          "Pan": 35,
-          "On": true
+          "Name": "Treble",
+          "Level": -6,
+          "Pan": 17,
+          "On": false
         }
       }
     }
