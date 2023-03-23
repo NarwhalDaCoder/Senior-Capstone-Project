@@ -12,7 +12,7 @@ def validateTokens(tokens, config):
     MIXES = config[2]
     CHANNELS = config[3]
     # define valid paths
-    validPrefix = ['get']
+    validPrefix = ['get', 'set']
     validInfix = ['MIXER:Current/InCh/Label/Name',
                   'MIXER:Current/InCh/ToMix/Level',
                   'MIXER:Current/InCh/ToMix/Pan',
@@ -90,3 +90,29 @@ def echoServer(config):
                     print(e)
                     response = "FAILED TO PROCESS"
                     raise Exception(e)
+                '''#Code needs to be able to run either command and either save or load the data from and to the json
+                #json must be saved after server is done running.
+                print(data)
+                if len(data.split()) > 0 and data.split()[0] == 'get':
+                    try:
+                        command = validateTokens(data.split())
+                        print(command)
+                        if command == []:
+                            break
+                        response  = 'OK ' + data + ' ' + getData(CL5,command)
+                    except Exception as e:
+                        print(e)
+                        response = "FAILED TO PROCESS"
+                    finally:
+                        time.sleep(.1)
+                        conn.sendall(response.encode())
+                elif len(data.split()) > 0 and data.split()[0] == 'set':
+                    # No need to validate tokens for set commands
+                    # The commands cannot change, they are hardcoded
+                    response = 'OK ' + data + ' LOADED'
+                    conn.sendall(response.encode())
+                else:
+                    break
+                '''
+
+
