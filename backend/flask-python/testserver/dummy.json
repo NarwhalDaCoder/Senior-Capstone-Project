@@ -140,11 +140,11 @@
         "23": {
           "Name": "CommitTest",
           "Level": -3,
-          "Pan": 2,
+          "Pan": ,
           "On": false
         },
         "24": {
-          "Name": "Bass",
+          "Name": "More Commit Tests",
           "Level": -4,
           "Pan": 35,
           "On": false
