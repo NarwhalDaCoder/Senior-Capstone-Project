@@ -16,7 +16,7 @@ PORT = 5002  # Port to listen on (non-privileged ports are > 1023)
 '''This functions takes a token list, and checks if tokens are in the correct format'''
 def validateTokens(tokens):
     #define valid paths
-    validPrefix = ['get']
+    validPrefix = ['get', 'set']
     validInfix = ['MIXER:Current/InCh/Label/Name',
                   'MIXER:Current/InCh/ToMix/Level',
                    'MIXER:Current/InCh/ToMix/Pan',
@@ -64,19 +64,26 @@ def echoServer():
             while True:
                 data = conn.recv(1024).decode()
                 print(data)
-                try:
-                    command = validateTokens(data.split())
-                    print(command)
-                    if command == []:
-                        break
-                    response  = 'OK ' + data + ' ' + getData(CL5,command)
-                except Exception as e:
-                    print(e)
-                    response = "FAILED TO PROCESS"
-                finally:
-                    time.sleep(.1)
+                if len(data.split()) > 0 and data.split()[0] == 'get':
+                    try:
+                        command = validateTokens(data.split())
+                        print(command)
+                        if command == []:
+                            break
+                        response  = 'OK ' + data + ' ' + getData(CL5,command)
+                    except Exception as e:
+                        print(e)
+                        response = "FAILED TO PROCESS"
+                    finally:
+                        time.sleep(.1)
+                        conn.sendall(response.encode())
+                elif len(data.split()) > 0 and data.split()[0] == 'set':
+                    # No need to validate tokens for set commands
+                    # The commands cannot change, they are hardcoded
+                    response = 'OK ' + data + ' LOADED'
                     conn.sendall(response.encode())
-
+                else:
+                    break
 
 
 
