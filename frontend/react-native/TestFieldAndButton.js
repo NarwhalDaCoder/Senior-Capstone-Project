@@ -1,51 +1,57 @@
-import React from "react";
-import { SafeAreaView, StyleSheet, TextInput, Button, View } from "react-native";
-import getDummyProfile from "./Functions";
-import TestGetTCP from "./Functions";
-//import  TestGet  from "./Functions.js";
+import React, { useState } from "react";
+import { SafeAreaView, StyleSheet, TextInput, Button, View, Text } from "react-native";
+import getDummyProfile from "./getDummyProfile";
+
 const TestFieldAndButton = () => {
-  const [ip, onChangeIP] = React.useState("");
-  const [port, onChangePort] = React.useState("");
-  const [channel, onChangeChannel] = React.useState("");
-  const [mix, onChangeMix] = React.useState("");
+  const [ip, onChangeIP] = useState("");
+  const [port, onChangePort] = useState("");
+  const [channel, onChangeChannel] = useState("");
+  const [mix, onChangeMix] = useState("");
+  const [data, setData] = useState(null);
+
+  //define event to get json and set to data
+  const handlePress = async () => {
+    const result = await getDummyProfile(ip, port, mix, channel);
+    setData(result);
+  }
+
   return (
     <View>
-    <SafeAreaView>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeIP}
-        value={ip}
-        placeholder="Enter IP Address"
-        keyboardType="decimal-pad"
+      <SafeAreaView>
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeIP}
+          value={ip}
+          placeholder="Enter IP Address"
+          keyboardType="decimal-pad"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangePort}
+          value={port}
+          placeholder="Enter Port"
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeChannel}
+          value={channel}
+          placeholder="Enter Channel"
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeMix}
+          value={mix}
+          placeholder="Enter Mix"
+          keyboardType="numeric"
+        />
+      </SafeAreaView>
+      <Button
+        title="Press me"
+        onPress={handlePress}
       />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangePort}
-        value={port}
-        placeholder="Enter Port"
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeChannel}
-        value={channel}
-        placeholder="Enter Channel"
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeMix}
-        value={mix}
-        placeholder="Enter Mix"
-        keyboardType="numeric"
-      />
-      
-    </SafeAreaView>
-    <Button
-    title="Press me"
-    //onPress={() => console.log(ip+" "+ port + " " + mix +" " + channel)}
-    onPress={() => getDummyProfile(ip,port,mix,channel)}
-    />
+      {data && <Text>{JSON.stringify(data)}</Text>}
     </View>
   );
 };
