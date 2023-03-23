@@ -132,9 +132,9 @@
           "On": false
         },
         "22": {
-          "Name": "Bass",
-          "Level": -4,
-          "Pan": 35,
+          "Name": "TestAnd",
+          "Level": -3,
+          "Pan": 67,
           "On": true
         },
         "23": {
