@@ -1,5 +1,6 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, TextInput, Button, View } from "react-native";
+import getDummyProfile from "./Functions";
 import TestGetTCP from "./Functions";
 //import  TestGet  from "./Functions.js";
 const TestFieldAndButton = () => {
@@ -43,7 +44,7 @@ const TestFieldAndButton = () => {
     <Button
     title="Press me"
     //onPress={() => console.log(ip+" "+ port + " " + mix +" " + channel)}
-    onPress={() => TestGetTCP(ip,port,mix,channel,1111)}
+    onPress={() => getDummyProfile(ip,port,mix,channel)}
     />
     </View>
   );
