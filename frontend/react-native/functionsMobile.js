@@ -1,6 +1,23 @@
 import TcpSocket from 'react-native-tcp-socket';
 import { Platform } from 'react-native';
 import RNFS from 'react-native-fs'; 
+/*
+This function will take expects the response of a JSON file after being parsed with .json()
+This will create a link that will wbe autoclicked for users to download the configuration file.
+*/
+async function saveData(data) {
+  try {
+    // create a new blob with the JSON data
+    const path = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.ExternalDirectoryPath;
+    const filePath = `${path}/data.json`;
+    await RNFS.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
+    
+    //return data to caller
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
 function initTCPSocket(ip, port) {
   // create a new TcpSocket instance
   const sock = TcpSocket.createConnection({ port: port, host: ip });
