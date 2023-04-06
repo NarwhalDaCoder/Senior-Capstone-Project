@@ -33,17 +33,37 @@ def login():
     json_str = json.dumps(data)
     return json_str, 200
 
-
-@app.route('/getDummyProfile', methods=['POST'])
+''' Gets data from API json, and calls configHelper with isDummy bool set to false
+    to get actual data from Yamaha CL5
+'''
+@app.route('/getYamahaProfile', methods=['POST'])
 @cross_origin(support_credentials=True)
-def dummy():
+def getYamahaProfile():
     # Grab arguments from api call
     content = request.json
     channel = int(content['channel'])
     PORT = int(content['PORT'])
     mix = int(content['mix'])
     HOST = content['HOST']
-    PORT = 5001
+
+    return configHelper(channel,PORT,mix,HOST,False), 200
+
+''' Gets data from API json, and calls configHelper with isDummy bool set to true
+    to create a fake yamaha console to get dummy data from.
+'''
+@app.route('/getDummyProfile', methods=['POST'])
+@cross_origin(support_credentials=True)
+def getDummyProfile():
+    # Grab arguments from api call
+    content = request.json
+    channel = int(content['channel'])
+    PORT = int(content['PORT'])
+    mix = int(content['mix'])
+    HOST = content['HOST']
+
+    return configHelper(channel,PORT,mix,HOST,True), 200
+
+def configHelper(channel,PORT,mix,HOST,isDummy):
     # Define prefixes and infixes to generate commands
     validPrefix = ['get']
     validInfix = ['MIXER:Current/InCh/Label/Name',
@@ -62,13 +82,14 @@ def dummy():
         "timestamp": 'temp',
         "user": "",
         "mixes": []}
-    # Define config for CL5 emulator, and start thread
-    config = ['0.0.0.0', PORT, mix, channel]
-    thread = Thread(target=emulated.echoServer, args=([config]))
-    thread.start()
+    if isDummy:
+        # Define config for CL5 emulator, and start thread
+        config = ['0.0.0.0', PORT, mix, channel]
+        thread = Thread(target=emulated.echoServer, args=([config]))
+        thread.start()
 
-    # Wait for thread to spin up
-    time.sleep(1)
+        # Wait for thread to spin up
+        time.sleep(1)
 
     # Open Socket to emulator thread
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -106,16 +127,17 @@ def dummy():
                 mix_dict[str(j)] = channel_dict
             # append mix data to json
             jsonFormat["mixes"].append({str(i): mix_dict})
-
-        # Send signal to emulator to kill itself
-        s.sendall(TERMINATE.encode())
-
-    # wait for thread to finish dying
-    thread.join()
+        if isDummy:
+            # Send signal to emulator to kill itself
+            s.sendall(TERMINATE.encode())
+            # wait for thread to finish dying
+            thread.join()
+        else:
+            s.close()
     # append datatime to json
     now = datetime.datetime.now()
     jsonFormat["timestamp"] = str(now)
 
     # return json to api
     json_str = json.dumps(jsonFormat)
-    return json_str, 200
+    return json_str
