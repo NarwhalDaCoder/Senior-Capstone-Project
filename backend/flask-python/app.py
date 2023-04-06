@@ -36,9 +36,9 @@ def login():
 ''' Gets data from API json, and calls configHelper with isDummy bool set to false
     to get actual data from Yamaha CL5
 '''
-@app.route('/getConfigProfile', methods=['POST'])
+@app.route('/getYamahaProfile', methods=['POST'])
 @cross_origin(support_credentials=True)
-def getConfigProfile():
+def getYamahaProfile():
     # Grab arguments from api call
     content = request.json
     channel = int(content['channel'])
