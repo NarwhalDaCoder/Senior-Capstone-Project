@@ -1,14 +1,8 @@
-async function getConfigProfile(ip, port, mix, channel,isDummy) {
-let path = '';
+async function getConfigProfile(ip, port, mix, channel) {
+
 try {
-    const dummyPath = 'http://localhost:5000/getDummyProfile'
-    const yamahaPath = 'http://localhost:5000/getYamahaProfile'
-    if (isDummy == true) {
-        path = dummyPath;
-      }
-    else{
-        path = yamahaPath;
-    }
+    var hostname = window.location.hostname;
+    const path = 'http://'+hostname+'/getConfigProfile'
     const response = await fetch(path, {
       method: 'POST',
       headers: {
