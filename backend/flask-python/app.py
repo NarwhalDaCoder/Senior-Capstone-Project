@@ -129,10 +129,13 @@ def configHelper(channel,PORT,mix,HOST,isDummy):
             jsonFormat["mixes"].append({str(i): mix_dict})
         if isDummy:
             # Send signal to emulator to kill itself
-            s.sendall(TERMINATE.encode())
+            s.send(TERMINATE.encode())
+            s.shutdown(socket.SHUT_RDWR)
+            s.close()
             # wait for thread to finish dying
             thread.join()
         else:
+            s.shutdown(socket.SHUT_RDWR)
             s.close()
     # append datatime to json
     now = datetime.datetime.now()
