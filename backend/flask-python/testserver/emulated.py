@@ -86,11 +86,12 @@ def echoServer(config):
                     response = 'OK ' + data + ' ' + getData(CL5, command)
                     conn.sendall(response.encode())
 
-                except Exception as e:
-                    print(e)
-                    response = "FAILED TO PROCESS"
-                    raise Exception(e)
-                '''#Code needs to be able to run either command and either save or load the data from and to the json
+                except socket.error as e:
+                    print("terminating emulators")
+                    break
+        s.shutdown(socket.SHUT_RDWR)
+        s.close()
+'''#Code needs to be able to run either command and either save or load the data from and to the json
                 #json must be saved after server is done running.
                 print(data)
                 if len(data.split()) > 0 and data.split()[0] == 'get':

@@ -36,9 +36,9 @@ def login():
 ''' Gets data from API json, and calls configHelper with isDummy bool set to false
     to get actual data from Yamaha CL5
 '''
-@app.route('/getConfigProfile', methods=['POST'])
+@app.route('/getYamahaProfile', methods=['POST'])
 @cross_origin(support_credentials=True)
-def getConfigProfile():
+def getYamahaProfile():
     # Grab arguments from api call
     content = request.json
     channel = int(content['channel'])
@@ -129,10 +129,13 @@ def configHelper(channel,PORT,mix,HOST,isDummy):
             jsonFormat["mixes"].append({str(i): mix_dict})
         if isDummy:
             # Send signal to emulator to kill itself
-            s.sendall(TERMINATE.encode())
+            s.send(TERMINATE.encode())
+            s.shutdown(socket.SHUT_RDWR)
+            s.close()
             # wait for thread to finish dying
             thread.join()
         else:
+            s.shutdown(socket.SHUT_RDWR)
             s.close()
     # append datatime to json
     now = datetime.datetime.now()
