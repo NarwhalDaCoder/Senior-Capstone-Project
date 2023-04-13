@@ -30,7 +30,6 @@ async function saveData(data) {
   console.log(err);
 }
 }
-
 async function getConfigProfile(ip, port, mix, channel,isDummy) {
 let path = '';
 try {
