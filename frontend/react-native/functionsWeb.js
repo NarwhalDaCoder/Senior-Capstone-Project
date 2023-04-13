@@ -33,8 +33,9 @@ async function saveData(data) {
 async function getConfigProfile(ip, port, mix, channel,isDummy) {
 let path = '';
 try {
-    const dummyPath = 'http://localhost:5000/getDummyProfile'
-    const yamahaPath = 'http://localhost:5000/getYamahaProfile'
+    var hostname = window.location.hostname;
+    const dummyPath = 'http://'+hostname+':5000/getDummyProfile'
+    const yamahaPath = 'http://'+hostname+':5000/getYamahaProfile'
     if (isDummy == true) {
         path = dummyPath;
       }
