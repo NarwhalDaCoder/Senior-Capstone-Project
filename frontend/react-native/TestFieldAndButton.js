@@ -3,11 +3,13 @@ import { SafeAreaView, StyleSheet, TextInput, Button, View, Text } from "react-n
 import { Platform } from 'react-native';
 
 let getConfigProfile;
+let setConfigProfile
 //Import from either functionsWeb.js or functionsMobile.js
 // where both files use export { getConfigProfile }; at the end of the file
 // to export the code
 if (Platform.OS === 'web') {
   getConfigProfile = require('./functionsWeb').getConfigProfile;
+  setConfigProfile = require('./functionsWeb').setConfigProfile;
 } else{
   getConfigProfile = require('./functionsMobile').getConfigProfile;
 } 
@@ -24,6 +26,17 @@ const TestFieldAndButton = () => {
   const handlePress = async () => {
     const result = await  getConfigProfile(ip, port, mix, channel,true);
     setData(result);
+  }
+
+  function loadFile() {
+    const input = document.getElementById("inputFile");
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function() {
+      const text = reader.result;
+      setConfigProfile(ip, port, mix, channel, text, true);
+    }
   }
 
   return (
@@ -58,6 +71,9 @@ const TestFieldAndButton = () => {
           keyboardType="numeric"
         />
       </SafeAreaView>
+      <input type ="file" id="inputFile"/>
+        <button onclick="loadFile()">LoadFile</button>
+
       <Button
         title="Press me"
         onPress={handlePress}

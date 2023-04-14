@@ -63,6 +63,19 @@ def getDummyProfile():
 
     return configHelper(channel,PORT,mix,HOST,True), 200
 
+@app.route('/setDummyProfile', methods=['POST'])
+@cross_origin(support_credentials=True)
+def setDummyProfile():
+    # Grab arguments from api call
+    content = request.json
+    channel = int(content['channel'])
+    PORT = int(content['PORT'])
+    mix = int(content['mix'])
+    HOST = content['HOST']
+    file = content['file']
+
+    return setConfigHelper(channel,PORT,mix,HOST,file,True), 200
+
 def configHelper(channel,PORT,mix,HOST,isDummy):
     # Define prefixes and infixes to generate commands
     validPrefix = ['get']
@@ -140,6 +153,66 @@ def configHelper(channel,PORT,mix,HOST,isDummy):
     # append datatime to json
     now = datetime.datetime.now()
     jsonFormat["timestamp"] = str(now)
+
+    # return json to api
+    json_str = json.dumps(jsonFormat)
+    return json_str
+
+def setConfigHelper(channel,PORT,mix,HOST,file,isDummy):
+    # Define prefixes and infixes to generate commands
+    validPrefix = ['set']
+    validInfix = ['MIXER:Current/InCh/Label/Name',
+                  'MIXER:Current/InCh/ToMix/Level',
+                  'MIXER:Current/InCh/ToMix/Pan',
+                  'MIXER:Current/InCh/ToMix/On']
+
+    # Define 1 to 1 relation between labels and types
+    labels = ['Name', 'Level', 'Pan', 'On']
+    types = ['str', 'int', 'int', 'bool']
+
+    # Define Base Layout for JSON data response
+    jsonFormat = {
+        "filename": "CL5.json",
+        "version": "0.1",
+        "timestamp": 'temp',
+        "user": "",
+        "mixes": []}
+    
+    load_data = json.loads(file)
+
+    if isDummy:
+        # Define config for CL5 emulator, and start thread
+        config = ['0.0.0.0', PORT, mix, channel]
+        thread = Thread(target=emulated.echoServer, args=([config]))
+        thread.start()
+
+        # Wait for thread to spin up
+        time.sleep(1)
+
+    # Open Socket to emulator thread
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+
+        for m in load_data['mixes'][0]:
+            for c in load_data['mixes'][0][mix]:
+                for i, x in enumerate(labels):
+                    if x == 'On':
+                        command = validPrefix[0] + ' ' + validInfix[i] + ' ' + c + ' ' + m + ' ' + str(int(load_data['mixes'][0][mix][channel][x]))
+                    else:
+                        command = validPrefix[0] + ' ' + validInfix[i] + ' ' + c + ' ' + m + ' ' + str(load_data['mixes'][0][mix][channel][x])
+                    s.sendall(command.encode())
+                    response = s.recv(1024).decode().split()[-1]
+
+        if isDummy:
+            # Send signal to emulator to kill itself
+            s.send(TERMINATE.encode())
+            s.shutdown(socket.SHUT_RDWR)
+            s.close()
+            # wait for thread to finish dying
+            thread.join()
+        else:
+            s.shutdown(socket.SHUT_RDWR)
+            s.close()
 
     # return json to api
     json_str = json.dumps(jsonFormat)

@@ -64,4 +64,35 @@ try {
   }
 }
 
-export { getConfigProfile };
+async function setConfigProfile(ip, port, mix, channel, file, isDummy) {
+  let path = '';
+  try {
+      var hostname = window.location.hostname;
+      const dummyPath = 'http://'+hostname+':5000/setDummyProfile'
+      if (isDummy == true) {
+          path = dummyPath;
+      }
+      const response = await fetch(path, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          channel: channel,
+          mix: mix,
+          HOST: ip,
+          PORT: port,
+          file: file
+        })
+      });
+      
+      const tempData = await response.json();
+      const data = saveData(tempData);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+export { getConfigProfile, setConfigProfile };
