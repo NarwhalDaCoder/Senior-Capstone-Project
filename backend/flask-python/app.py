@@ -33,8 +33,9 @@ def login():
     json_str = json.dumps(data)
     return json_str, 200
 
-''' Gets data from API json, and calls configHelper with isDummy bool set to false
-    to get actual data from Yamaha CL5
+''' Gets data from API json, and calls configHelper with isDummy bool set to false(for actual console)
+    and true(for dummy console)
+    to get data from the appropriate console device.
 '''
 @app.route('/getYamahaProfile', methods=['POST'])
 @cross_origin(support_credentials=True)
@@ -45,11 +46,12 @@ def getYamahaProfile():
     PORT = int(content['PORT'])
     mix = int(content['mix'])
     HOST = content['HOST']
+    isDummy = bool(content['isDummy'])
+    return configHelper(channel,PORT,mix,HOST,isDummy), 200
 
-    return configHelper(channel,PORT,mix,HOST,False), 200
-
-''' Gets data from API json, and calls configHelper with isDummy bool set to false
-    to get single mix data from Yamaha CL5
+''' Gets data from API json, and calls configHelper with isDummy bool set to false(for actual console)
+    and true(for dummy console)
+    to get single mix data from appropriate console device.
 '''
 @app.route('/getSingleYamahaMix', methods=['POST'])
 @cross_origin(support_credentials=True)
@@ -60,38 +62,8 @@ def getSingleYamahaMix():
     PORT = int(content['PORT'])
     mix = int(content['mix'])
     HOST = content['HOST']
-
-    return singleMixConfigHelper(channel,PORT,mix,HOST,False), 200
-
-''' Gets data from API json, and calls configHelper with isDummy bool set to true
-    to create a fake yamaha console to get dummy data from.
-'''
-@app.route('/getDummyProfile', methods=['POST'])
-@cross_origin(support_credentials=True)
-def getDummyProfile():
-    # Grab arguments from api call
-    content = request.json
-    channel = int(content['channel'])
-    PORT = int(content['PORT'])
-    mix = int(content['mix'])
-    HOST = content['HOST']
-
-    return configHelper(channel,PORT,mix,HOST,True), 200
-
-''' Gets data from API json, and calls configHelper with isDummy bool set to true
-    to create a fake yamaha console to get a single mix from.
-'''
-@app.route('/getSingleDummyMix', methods=['POST'])
-@cross_origin(support_credentials=True)
-def getSingleDummyMix():
-    # Grab arguments from api call
-    content = request.json
-    channel = int(content['channel'])
-    PORT = int(content['PORT'])
-    mix = int(content['mix'])
-    HOST = content['HOST']
-
-    return singleMixConfigHelper(channel,PORT,mix,HOST,True), 200
+    isDummy = bool(content['isDummy'])
+    return singleMixConfigHelper(channel,PORT,mix,HOST,isDummy), 200
 
 def configHelper(channel,PORT,mix,HOST,isDummy):
     # Define prefixes and infixes to generate commands
