@@ -30,38 +30,56 @@ async function saveData(data) {
   console.log(err);
 }
 }
-async function getConfigProfile(ip, port, mix, channel,isDummy) {
-let path = '';
-try {
+async function getHelper(ip,port,mix,channel,isDummy,path){
+  try {
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      channel: channel,
+      mix: mix,
+      HOST: ip,
+      PORT: port,
+      isDummy:isDummy
+    })
+  });
+  
+  const tempData = await response.json();
+  const data = saveData(tempData);
+  return data;
+} catch (err) {
+  console.log(err);
+}
+}
+/*
+This function will take the listed ip and port to connect to a dummy, or real console
+hosted at that location, and return the entire configuration of all mixes, up to 
+max number of channels and mixes defined i nthe parameters. Dummy console is launched when isDummy bool
+is on.
+*/
+async function getYamahaProfile(ip, port, mix, channel,isDummy) {
+
     var hostname = window.location.hostname;
-    const dummyPath = 'http://'+hostname+':5000/getDummyProfile'
     const yamahaPath = 'http://'+hostname+':5000/getYamahaProfile'
-    if (isDummy == true) {
-        path = dummyPath;
-      }
-    else{
-        path = yamahaPath;
-    }
-    const response = await fetch(path, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        channel: channel,
-        mix: mix,
-        HOST: ip,
-        PORT: port
-      })
-    });
-    
-    const tempData = await response.json();
-    const data = saveData(tempData);
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
+
+    return getHelper(ip,port,mix,channel,isDummy,yamahaPath)
+  
+}
+/*
+This function will take the listed ip and port to connect to a dummy, or real console
+hosted at that location, and return the configuration of the selected mix
+max number of channels is defined in the parameters. Dummy console is launched when isDummy bool
+is on.
+*/
+async function getSingleYamahaMix(ip, port, mix, channel,isDummy) {
+
+      var hostname = window.location.hostname;
+      const yamahaPath = 'http://'+hostname+':5000/getSingleYamahaMix';
+      return getHelper(ip,port,mix,channel,isDummy,yamahaPath);
+  
 }
 
-export { getConfigProfile };
+export { getSingleYamahaMix,getYamahaProfile };
