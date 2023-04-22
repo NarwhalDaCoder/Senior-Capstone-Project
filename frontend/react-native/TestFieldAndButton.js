@@ -26,7 +26,7 @@ const TestFieldAndButton = () => {
     const result = await getYamahaProfile(ip, port, mix, channel,true);
     const resultSingle = await getSingleYamahaMix(ip, port, mix, channel,true);
     setData(result);
-    setData(resultSingle);
+    setDataSingle(resultSingle);
   }
 
   return (
@@ -66,7 +66,7 @@ const TestFieldAndButton = () => {
         onPress={handlePress}
       />
       {data && <Text>{JSON.stringify(data)}</Text>}
-      {data && <Text>{JSON.stringify(data)}</Text>}
+      {dataSingle && <Text>{JSON.stringify(dataSingle)}</Text>}
     </View>
   );
 };
