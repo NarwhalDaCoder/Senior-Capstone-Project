@@ -85,4 +85,4 @@ async function getSingleYamahaMix(ip, port, mix, channel,isDummy,toSave) {
   
 }
 
-export { getSingleYamahaMix,getYamahaProfile };
+export { getSingleYamahaMix,getYamahaProfile,saveData };

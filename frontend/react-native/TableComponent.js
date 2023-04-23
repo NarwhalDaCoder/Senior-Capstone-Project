@@ -1,11 +1,12 @@
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import { saveData } from "./functionsWeb";
 
 const TableComponent = ({ jsonFile }) => {
   const [mixName, setMixName] = useState('');
   const [mixData, setMixData] = useState([]);
-
+  const [jsonData, setJsonData] = useState("");
   useEffect(() => {
     if (jsonFile) {
       loadJSONFile(jsonFile);
@@ -33,19 +34,29 @@ const TableComponent = ({ jsonFile }) => {
   };
   const loadJSONFile = async (file) => {
     try {
-        console.log(file);
-        setMixName(file.filename);
-        setMixData(file);
+      console.log(file);
+      setMixName(file.filename);
+      setMixData(file);
+      setJsonData(file);
     } catch (err) {
-        console.log('Error loading JSON file:', err, fileContents);
+      console.log('Error loading JSON file:', err);
     }
-};
+  };
+  const handleSave = async () => {
+    try {
+      saveData(jsonData)
+    } catch (err) {
+      console.log('Error saving JSON FILE');
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>{mixName || 'No mix selected'}</Text>
-        <Button title="+" onPress={pickJSONFile} />
+        {//NOT USED WHEN SAVING FROM API<Button title="+" onPress={pickJSONFile} />
+        }
+        <Button title="Save" onPress={handleSave} disabled={!jsonData} />
       </View>
       <View style={styles.table}>
         <View style={styles.row}>
@@ -55,6 +66,7 @@ const TableComponent = ({ jsonFile }) => {
           <Text style={styles.cell}>Pan</Text>
           <Text style={styles.cell}>On</Text>
         </View>
+
         {mixData && mixData.mixes ? (
           Object.entries(mixData.mixes).map(([channel, mixItem]) => (
             <View key={channel} style={styles.row}>
@@ -69,6 +81,7 @@ const TableComponent = ({ jsonFile }) => {
           // Render something else when mixData or mixData.mixes is undefined
           <Text>No data available</Text>
         )}
+
       </View>
     </View>
   );
