@@ -9,7 +9,6 @@ export default function App() {
       <Text>Open up App.js to start working on your app!</Text>
       <Text>Edits to App</Text>
       <TestFieldAndButton />
-      <TableComponent />
       <StatusBar style="auto" />
       <Text>More edits</Text>
     </View>

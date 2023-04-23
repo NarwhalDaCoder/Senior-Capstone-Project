@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 
-const TableComponent = () => {
+const TableComponent = ({ jsonFile }) => {
   const [mixName, setMixName] = useState('');
   const [mixData, setMixData] = useState([]);
+
+  useEffect(() => {
+    if (jsonFile) {
+      loadJSONFile(jsonFile);
+    }
+  }, [jsonFile]);
 
   const pickJSONFile = async () => {
     try {
@@ -25,6 +31,15 @@ const TableComponent = () => {
       console.log('Error picking JSON file:', err);
     }
   };
+  const loadJSONFile = async (file) => {
+    try {
+        console.log(file);
+        setMixName(file.filename);
+        setMixData(file);
+    } catch (err) {
+        console.log('Error loading JSON file:', err, fileContents);
+    }
+};
 
   return (
     <View style={styles.container}>
@@ -40,15 +55,20 @@ const TableComponent = () => {
           <Text style={styles.cell}>Pan</Text>
           <Text style={styles.cell}>On</Text>
         </View>
-        {mixData.map((mixItem, index) => (
-          <View key={index} style={styles.row}>
-            <Text style={styles.cell}>{mixItem.channel}</Text>
-            <Text style={styles.cell}>{mixItem.device}</Text>
-            <Text style={styles.cell}>{mixItem.level}</Text>
-            <Text style={styles.cell}>{mixItem.pan}</Text>
-            <Text style={styles.cell}>{mixItem.on}</Text>
-          </View>
-        ))}
+        {mixData && mixData.mixes ? (
+          Object.entries(mixData.mixes).map(([channel, mixItem]) => (
+            <View key={channel} style={styles.row}>
+              <Text style={styles.cell}>{channel}</Text>
+              <Text style={styles.cell}>{mixItem.Name}</Text>
+              <Text style={styles.cell}>{mixItem.Level}</Text>
+              <Text style={styles.cell}>{mixItem.Pan}</Text>
+              <Text style={styles.cell}>{mixItem.On ? 'true' : 'false'}</Text>
+            </View>
+          ))
+        ) : (
+          // Render something else when mixData or mixData.mixes is undefined
+          <Text>No data available</Text>
+        )}
       </View>
     </View>
   );
