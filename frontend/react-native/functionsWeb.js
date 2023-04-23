@@ -30,7 +30,7 @@ async function saveData(data) {
   console.log(err);
 }
 }
-async function getHelper(ip,port,mix,channel,isDummy,path){
+async function getHelper(ip,port,mix,channel,isDummy,path,toSave){
   try {
   const response = await fetch(path, {
     method: 'POST',
@@ -47,9 +47,12 @@ async function getHelper(ip,port,mix,channel,isDummy,path){
     })
   });
   
-  const tempData = await response.json();
-  const data = saveData(tempData);
-  return data;
+  let tempData = await response.json();
+  if (toSave){
+    tempData = saveData(tempData);
+  }
+  
+  return tempData;
 } catch (err) {
   console.log(err);
 }
@@ -60,12 +63,12 @@ hosted at that location, and return the entire configuration of all mixes, up to
 max number of channels and mixes defined i nthe parameters. Dummy console is launched when isDummy bool
 is on.
 */
-async function getYamahaProfile(ip, port, mix, channel,isDummy) {
+async function getYamahaProfile(ip, port, mix, channel,isDummy,toSave) {
 
     var hostname = window.location.hostname;
     const yamahaPath = 'http://'+hostname+':5000/getYamahaProfile'
 
-    return getHelper(ip,port,mix,channel,isDummy,yamahaPath)
+    return getHelper(ip,port,mix,channel,isDummy,yamahaPath,toSave)
   
 }
 /*
@@ -74,11 +77,11 @@ hosted at that location, and return the configuration of the selected mix
 max number of channels is defined in the parameters. Dummy console is launched when isDummy bool
 is on.
 */
-async function getSingleYamahaMix(ip, port, mix, channel,isDummy) {
+async function getSingleYamahaMix(ip, port, mix, channel,isDummy,toSave) {
 
       var hostname = window.location.hostname;
       const yamahaPath = 'http://'+hostname+':5000/getSingleYamahaMix';
-      return getHelper(ip,port,mix,channel,isDummy,yamahaPath);
+      return getHelper(ip,port,mix,channel,isDummy,yamahaPath,toSave);
   
 }
 

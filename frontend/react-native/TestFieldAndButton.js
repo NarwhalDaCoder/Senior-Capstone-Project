@@ -27,7 +27,7 @@ const TestFieldAndButton = () => {
   //Ensure bool is set to false to enable dummy mode.
   const handlePress = async () => {
     //const result = await getYamahaProfile(ip, port, mix, channel,true);
-    const resultSingle = await getSingleYamahaMix(ip, port, mix, channel,true);
+    const resultSingle = await getSingleYamahaMix(ip, port, mix, channel,true,true);
     //loadJSONFromAPI(resultSingle, setMixName, setMixData);
     //setData(result);
     //setDataSingle(resultSingle);
