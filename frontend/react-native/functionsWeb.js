@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message'
 /*
 This function will take expects the response of a JSON file after being parsed with .json()
 This will create a link that will wbe autoclicked for users to download the configuration file.
@@ -74,7 +75,14 @@ async function setHelper(ip,port,mix,channel,isDummy,path,file){
       file:file
     })
   });
-  
+
+  if (response.status === 200) {
+    console.log('here')
+    Toast.show({
+      type: 'success',
+      text1: 'Data successfully moved to console'
+    });
+  }
   let tempData = await response.json();
 
   

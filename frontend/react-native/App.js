@@ -4,10 +4,25 @@ import { StyleSheet, Text, View, Button,Animated } from 'react-native';
 import TestFieldAndButton from './TestFieldAndButton';
 import { LinearGradient } from 'expo-linear-gradient';
 import LoadPage from './LoadPage';
+import Toast, { BaseToast } from 'react-native-toast-message';
 
 export default function App() {
   const [showTestFieldAndButton, setShowTestFieldAndButton] = useState(true);
-
+  const toastConfig = {
+    success: ({ text1, props, ...rest }) => (
+      <BaseToast
+        {...rest}
+        style={{ backgroundColor: '#fff', opacity: 1, zIndex: 9999 }}
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+        text1Style={{
+          fontSize: 15,
+          fontWeight: '400'
+        }}
+        text1={text1}
+        text2={props.uuid}
+      />
+    ),
+  };
   return (
     <LinearGradient
       colors={['#dbbce4', '#f3cfd7', '#f7e0ca', '#f4f4f4', '#d1dcfb', '#d6f1df']}
@@ -16,6 +31,7 @@ export default function App() {
       end={{ x: 1, y: 1 }}
     >
     <View style={styles.container}>
+    <Toast config={toastConfig} />
       <Button
         title={showTestFieldAndButton ? "Switch to Load" : "Switch to Save"}
         onPress={() => setShowTestFieldAndButton(!showTestFieldAndButton)}
