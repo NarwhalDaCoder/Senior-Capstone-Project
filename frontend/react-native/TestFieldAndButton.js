@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, TextInput, Button, View, Text } from "react-native";
 import { Platform } from 'react-native';
+import { getYamahaProfile,getSingleYamahaMix } from "./functionsWeb";
+import TableComponent from './TableComponent';
+
 
 let getConfigProfile;
 let setConfigProfile
@@ -13,6 +16,14 @@ if (Platform.OS === 'web') {
 } else{
   getConfigProfile = require('./functionsMobile').getConfigProfile;
 } 
+//Import from either functionsWeb.js or functionsMobile.js
+// where both files use export { getConfigProfile }; at the end of the file
+// to export the code
+//if (Platform.OS === 'web') {
+//  getYamahaProfile = require('./functionsWeb').getYamahaProfile;
+//} else{
+//  getYamahaProfile = require('./functionsMobile').getYamahaProfile;
+//} 
 
 const TestFieldAndButton = () => {
   const [ip, onChangeIP] = useState("");
@@ -20,13 +31,19 @@ const TestFieldAndButton = () => {
   const [channel, onChangeChannel] = useState("");
   const [mix, onChangeMix] = useState("");
   const [data, setData] = useState(null);
+  const [dataSingle, setDataSingle] = useState(null);
+  const [jsonFile, setJsonFile] = useState(null);
 
   //define event to get json and set to data
   //Ensure bool is set to false to enable dummy mode.
   const handlePress = async () => {
-    const result = await  getConfigProfile(ip, port, mix, channel,true);
-    setData(result);
-  }
+    //const result = await getYamahaProfile(ip, port, mix, channel,true);
+    const resultSingle = await getSingleYamahaMix(ip, port, mix, channel,true,true);
+    //loadJSONFromAPI(resultSingle, setMixName, setMixData);
+    //setData(result);
+    //setDataSingle(resultSingle);
+    setJsonFile(resultSingle);
+  };
 
   function loadFile() {
     const input = document.getElementById("inputFile");
@@ -78,7 +95,11 @@ const TestFieldAndButton = () => {
         title="Press me"
         onPress={handlePress}
       />
-      {data && <Text>{JSON.stringify(data)}</Text>}
+      {//data && <Text>{JSON.stringify(data)}</Text>}
+      }
+      {//dataSingle && <Text>{JSON.stringify(dataSingle)}</Text>}
+    }
+      <TableComponent jsonFile={jsonFile} />
     </View>
   );
 };
