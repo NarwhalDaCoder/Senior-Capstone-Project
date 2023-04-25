@@ -3,8 +3,7 @@ import React, { useState,useRef,useEffect } from 'react';
 import { StyleSheet, Text, View, Button,Animated } from 'react-native';
 import TestFieldAndButton from './TestFieldAndButton';
 import { LinearGradient } from 'expo-linear-gradient';
-
-//import LoadPage from './LoadPage';
+import LoadPage from './LoadPage';
 
 export default function App() {
   const [showTestFieldAndButton, setShowTestFieldAndButton] = useState(true);
@@ -22,7 +21,7 @@ export default function App() {
         onPress={() => setShowTestFieldAndButton(!showTestFieldAndButton)}
       />
       <Text>Enter the form details to access the console.</Text>
-      {showTestFieldAndButton ? <TestFieldAndButton /> : <View/>}
+      {showTestFieldAndButton ? <TestFieldAndButton /> : <LoadPage/>}
       <StatusBar style="auto" />
     </View>
     </LinearGradient>
