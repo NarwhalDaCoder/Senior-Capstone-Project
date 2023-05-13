@@ -1,21 +1,9 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, TextInput, Button, View, Text } from "react-native";
-import { Platform } from 'react-native';
-import { getYamahaProfile,getSingleYamahaMix } from "./functionsWeb";
-import TableComponent from './TableComponent';
+import { setYamahaProfile, setSingleYamahaMix } from "./functionsWeb";
+import TableComponent from './loadTableComponent';
 
-
-
-//Import from either functionsWeb.js or functionsMobile.js
-// where both files use export { getConfigProfile }; at the end of the file
-// to export the code
-//if (Platform.OS === 'web') {
-//  getYamahaProfile = require('./functionsWeb').getYamahaProfile;
-//} else{
-//  getYamahaProfile = require('./functionsMobile').getYamahaProfile;
-//} 
-
-const TestFieldAndButton = () => {
+const LoadPage = () => {
   const [ip, onChangeIP] = useState("");
   const [port, onChangePort] = useState("");
   const [channel, onChangeChannel] = useState("");
@@ -23,12 +11,12 @@ const TestFieldAndButton = () => {
   const [data, setData] = useState(null);
   const [dataSingle, setDataSingle] = useState(null);
   const [jsonFile, setJsonFile] = useState(null);
-
+  const [mixData, setMixData] = useState([]);
   //define event to get json and set to data
   //Ensure bool is set to false to enable dummy mode.
   const handlePress = async () => {
     //const result = await getYamahaProfile(ip, port, mix, channel,true);
-    const resultSingle = await getSingleYamahaMix(ip, port, mix, channel,true,true);
+    const resultSingle = await setSingleYamahaMix(ip, port, mix, channel, true, mixData);
     //loadJSONFromAPI(resultSingle, setMixName, setMixData);
     //setData(result);
     //setDataSingle(resultSingle);
@@ -36,8 +24,11 @@ const TestFieldAndButton = () => {
   };
 
 
+  const handleMixDataUpdate = (newMixData) => {
+    setMixData(newMixData);
+    console.log(newMixData);
+  };
 
-  
   return (
     <View>
       <SafeAreaView>
@@ -70,15 +61,17 @@ const TestFieldAndButton = () => {
           keyboardType="numeric"
         />
       </SafeAreaView>
+
       <Button
-        title="Press me"
+        title="Load Mix To Console"
         onPress={handlePress}
+        disabled={mixData.length === 0}
       />
       {//data && <Text>{JSON.stringify(data)}</Text>}
       }
       {//dataSingle && <Text>{JSON.stringify(dataSingle)}</Text>}
-    }
-      <TableComponent jsonFile={jsonFile} />
+      }
+      <TableComponent onMixDataUpdate={handleMixDataUpdate} />
     </View>
   );
 };
@@ -92,4 +85,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TestFieldAndButton;
+export default LoadPage;

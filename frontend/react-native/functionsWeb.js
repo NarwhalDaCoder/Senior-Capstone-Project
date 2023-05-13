@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message'
 /*
 This function will take expects the response of a JSON file after being parsed with .json()
 This will create a link that will wbe autoclicked for users to download the configuration file.
@@ -57,6 +58,39 @@ async function getHelper(ip,port,mix,channel,isDummy,path,toSave){
   console.log(err);
 }
 }
+async function setHelper(ip,port,mix,channel,isDummy,path,file){
+  try {
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      channel: channel,
+      mix: mix,
+      HOST: ip,
+      PORT: port,
+      isDummy:isDummy,
+      file:file
+    })
+  });
+
+  if (response.status === 200) {
+    console.log('here')
+    Toast.show({
+      type: 'success',
+      text1: 'Data successfully moved to console'
+    });
+  }
+  let tempData = await response.json();
+
+  
+  return tempData;
+} catch (err) {
+  console.log(err);
+}
+}
 /*
 This function will take the listed ip and port to connect to a dummy, or real console
 hosted at that location, and return the entire configuration of all mixes, up to 
@@ -84,5 +118,26 @@ async function getSingleYamahaMix(ip, port, mix, channel,isDummy,toSave) {
       return getHelper(ip,port,mix,channel,isDummy,yamahaPath,toSave);
   
 }
+/*
+This function will take the listed ip and port to connect to a dummy, or real console
+hosted at that location, and send it a file of the whole Yamaha Profile to update.It should return the entire a JSON with {'didLoad':True}
+if it succeds talking to the api.
+*/
+async function setYamahaProfile(ip, port, mix, channel,isDummy,file) {
+  var hostname = window.location.hostname;
+  const yamahaPath = 'http://'+hostname+':5000/setYamahaProfile';
+  return setHelper(ip,port,mix,channel,isDummy,yamahaPath,file);
+  }
+/*
+This function will take the listed ip and port to connect to a dummy, or real console
+hosted at that location, and send it a file of a single mix to update.It should return the entire a JSON with {'didLoad':True}
+if it succeds talking to the api.
+*/
+  async function setSingleYamahaMix(ip, port, mix, channel,isDummy,file) {
+    var hostname = window.location.hostname;
+    const yamahaPath = 'http://'+hostname+':5000/setSingleYamahaMix';
+    return setHelper(ip,port,mix,channel,isDummy,yamahaPath,file);
+  }
 
-export { getSingleYamahaMix,getYamahaProfile,saveData };
+
+export { getSingleYamahaMix,getYamahaProfile,setSingleYamahaMix,setYamahaProfile,saveData };
