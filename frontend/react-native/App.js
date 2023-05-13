@@ -1,18 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState,useRef,useEffect } from 'react';
+import { StyleSheet, Text, View, Button,Animated } from 'react-native';
 import TestFieldAndButton from './TestFieldAndButton';
-import TableComponent from './TableComponent';
+import { LinearGradient } from 'expo-linear-gradient';
+
+//import LoadPage from './LoadPage';
 
 export default function App() {
+  const [showTestFieldAndButton, setShowTestFieldAndButton] = useState(true);
+
   return (
+    <LinearGradient
+      colors={['#dbbce4', '#f3cfd7', '#f7e0ca', '#f4f4f4', '#d1dcfb', '#d6f1df']}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <Text>Edits to App</Text>
-      <TestFieldAndButton />
-      <TableComponent />
+      <Button
+        title={showTestFieldAndButton ? "Switch to Load" : "Switch to Save"}
+        onPress={() => setShowTestFieldAndButton(!showTestFieldAndButton)}
+      />
+      <Text>Enter the form details to access the console.</Text>
+      {showTestFieldAndButton ? <TestFieldAndButton /> : <View/>}
       <StatusBar style="auto" />
-      <Text>More edits</Text>
     </View>
+    </LinearGradient>
   );
 }
 
