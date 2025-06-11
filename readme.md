@@ -1,3 +1,8 @@
+# Project Documentaion
+This project was made for a Senior Capstone Project at Cal State Fullerton
+The project report pdf can be found at [here](docs/Project_Report_-_WeDev-3-1.pdf)
+
+# To Build and Run
 To run the dev enviornment
 Install Docker Desktop
 Then run either bat file in Windows or use equivalent command in file for linux
